@@ -4,20 +4,26 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
+
 import org.vision.autoscrollinglist.R;
+
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import vis.widget.AutoScrollAdapter;
 
 /**
- * Created by Vision on 15/6/5.
+ * Created by Vision on 15/6/5.<br>
+ * Email:Vision.lsm.2012@gmail.com
  */
 public class AutoScrollList extends ListView {
     private Context context;
@@ -26,16 +32,24 @@ public class AutoScrollList extends ListView {
     private String[] titleName;
     private int itemHight;
 
-    private final Handler myHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            jumpNext();
-        }
-    };
+    private final Handler myHandler = new MyHandler(this);
     private int position;
     private int displayLength;
     private OnClickListener onClickListener;
+
+    private static class MyHandler extends Handler {
+        private final WeakReference<AutoScrollList> mAutoScrollList;
+
+        public MyHandler(AutoScrollList asl) {
+            mAutoScrollList = new WeakReference<AutoScrollList>(asl);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            AutoScrollList asl = mAutoScrollList.get();
+            asl.jumpNext();
+        }
+    }
 
     public AutoScrollList(Context context) {
         super(context);
@@ -101,7 +115,12 @@ public class AutoScrollList extends ListView {
             adapter.notifyDataSetChanged();
             this.setSelectionFromTop(0, 0);
         }
-        this.smoothScrollToPositionFromTop(position + 1, 0, 500);
+        if (android.os.Build.VERSION.SDK_INT >= 11) {
+            this.smoothScrollToPositionFromTop(position + 1, 0, 500);
+        } else if (android.os.Build.VERSION.SDK_INT >= 8) {
+            Log.d("jumpNext()", String.valueOf(position));
+            this.smoothScrollBy(itemHight + this.getDividerHeight(), 500);
+        }
         position = (position + 1) % titleName.length;
     }
 

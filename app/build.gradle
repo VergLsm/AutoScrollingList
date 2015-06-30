@@ -5,8 +5,8 @@ android {
     buildToolsVersion "22.0.1"
     defaultConfig {
         applicationId "org.vision.autoscrollinglist"
-        minSdkVersion 14
-        targetSdkVersion 16
+        minSdkVersion 8
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
