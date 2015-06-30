@@ -1,6 +1,8 @@
 package vis.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -96,11 +98,11 @@ public class AutoScrollList extends ListView {
     }
 
     private List<Map<String, Object>> getData() {
-        List<Map<String, Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         Map<String, Object> map;
         for (int i = 0; i < titleName.length + displayLength; i++) {
-            map = new HashMap<>();
+            map = new HashMap<String, Object>();
             map.put("title", titleName[i % titleName.length]);
 //            map.put("img", R.mipmap.personnal_center_friends_relationship_page_icon_1 + (i % 3));
             map.put("img", imageRid[i % imageRid.length]);
@@ -109,6 +111,7 @@ public class AutoScrollList extends ListView {
         return list;
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void jumpNext() {
         if (0 == position) {
             //很无奈，准确定位要加这句
